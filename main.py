@@ -3,17 +3,17 @@ import pandas as pd
 from textblob import TextBlob
 import cleantext
 
-def analyze_sentiment(text):
+def analyze_sentiment(text: str):
   text = cleantext.clean(text=text, clean_all=True)
   analysis = TextBlob(text) # can add classifier by loading one from another file.
   sentiment_polarity = analysis.sentiment.polarity
 
   if sentiment_polarity > 0:
-    return "Positive"
+    return "Positive 😊"
   elif sentiment_polarity < 0:
-    return "Negative"
+    return "Negative 😔"
   else:
-    return "Neutral"
+    return "Neutral 😐"
 
 st.title("Sentiment Analysis App")
 
