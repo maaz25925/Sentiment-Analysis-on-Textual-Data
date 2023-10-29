@@ -25,10 +25,10 @@ try:
     df = pd.read_csv(uploaded_file)
     # Removing all NA values from all columns.
     df.dropna(inplace=True)
-    # content_column = st.text_input(label="Enter column name to analyse", value="text")
+    resultant_column = st.text_input(label="Enter column name to display result", value="Sentiment", help="Providing an existing column name would overwrite the existing")
     content_column = st.selectbox(label="Select a column to analyse", options=df.columns, index=None)
     try:
-      df["Sentiment"] = df[content_column].apply(analyze_sentiment)
+      df[resultant_column] = df[content_column].apply(analyze_sentiment)
     except pd.errors.ParserError as e:
       st.error("There was an issue parsing the file. Please check the file format.")
     except pd.errors.EmptyDataError as e:
