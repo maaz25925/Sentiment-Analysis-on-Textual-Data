@@ -2,6 +2,29 @@ import streamlit as st
 import pandas as pd
 from textblob import TextBlob
 import cleantext
+from streamlit_lottie import st_lottie
+import json
+import plotly.express as px
+@st.cache_data
+
+def load_lottiejson(path):
+  with open(path, 'r') as json_file:
+    return json.load(json_file)
+
+col1, col2 = st.columns([1, 1])
+with col1:
+  st.title("Sentiment Analysis App")
+  st.markdown(
+  """
+  <style>
+    #sentiment-analysis-app {
+      padding-top: 6rem;
+    }
+  </style>
+  """, unsafe_allow_html=True)
+with col2:
+  girl_statistic_animation = load_lottiejson("./animations/girl statistic analysis.json")
+  st_lottie(girl_statistic_animation, key="box-animation", width=300, height=300)
 
 def analyze_sentiment(text: str):
   text = cleantext.clean(text=text, clean_all=True)
@@ -15,7 +38,6 @@ def analyze_sentiment(text: str):
   else:
     return "Neutral 😐"
 
-st.title("Sentiment Analysis App")
 
 # the help parameter can be used to add different instructions for each element, it appears as a help tooltip above the element.
 uploaded_file = st.file_uploader(label="Upload a CSV file", type=["csv"])
@@ -47,9 +69,28 @@ try:
     if "Sentiment" in df.columns:
       sentiment_counts = df["Sentiment"].value_counts()
       st.subheader("Sentiment Distribution")
-      st.bar_chart(sentiment_counts)
+      fig = px.pie(sentiment_counts, names=sentiment_counts.index, values=sentiment_counts.values)
+      st.plotly_chart(fig)
 
-  st.subheader("Manual Sentiment Analysis")
+  st.markdown(
+  """
+  <hr style="height: 1rem;">
+  """, unsafe_allow_html=True)
+
+  smiley_faces_animation = load_lottiejson("./animations/3 smiley faces.json")
+  col3, col4 = st.columns([1, 1])
+  with col3:
+    st.title("Manual Sentiment Analysis")
+    st.markdown(
+    """
+    <style>
+      #manual-sentiment-analysis {
+        padding-top: 1rem;
+      }
+    </style>
+    """, unsafe_allow_html=True)
+  with col4:
+    st_lottie(smiley_faces_animation, key="smiley-face", width=200, height=200)
   user_input = st.text_area("Enter text: ")
   if st.button("Analyze"):
     try:
@@ -63,6 +104,10 @@ try:
 except Exception as e:
   st.error(f"An expected error ocurred: {e}")
 
-# Either we can add meaningful information here or remove the sidebar.
-st.sidebar.subheader("About")
-st.sidebar.text("This app performs sentiment analyses on textual data.")
+st.sidebar.subheader("Project Guidelines")
+st.sidebar.markdown("1. Upload a CSV file containing text data for sentiment analysis.")
+st.sidebar.markdown("2. Select a column to analyze and specify a column for the result.")
+st.sidebar.markdown("3. Click the 'Analyze' button to perform sentiment analysis on the selected text column.")
+st.sidebar.markdown("4. View the result in the main section, including a pie chart of sentiment distribution.")
+st.sidebar.markdown("5. You can also perform manual sentiment analysis by entering text in the text area.")
+st.sidebar.markdown("6. Click 'Analyze' to analyze the manually entered text for sentiment")
